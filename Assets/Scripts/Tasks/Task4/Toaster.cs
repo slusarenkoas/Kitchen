@@ -12,8 +12,6 @@ public class Toaster : MonoBehaviour
         // Если таймер вышел - выходим из метода
         if (_isTimerUp)
         {
-            TimerIsUp?.Invoke();
-            _isTimerUp = false;
             return;
         }
         
@@ -26,6 +24,7 @@ public class Toaster : MonoBehaviour
         else
         {
             // Таймер вышел
+            TimerIsUp?.Invoke();
             _isTimerUp = true;
         }
     }

@@ -3,9 +3,7 @@ using UnityEngine;
 
 public class Shelf : MonoBehaviour
 {
-    // TODO: Вызовите событие ItemSpawned в необходимом месте
-    
-    public static Action ItemSpawned;
+    public event Action <Shelf> ItemSpawned;
     public int ItemsCount { get; private set; }
 
     [SerializeField]
@@ -19,7 +17,7 @@ public class Shelf : MonoBehaviour
     private Animator _animator;
     private float _timer;
     
-    private void Awake()
+    private void Start()
     {
         InstantiateShelfItem();
     }
@@ -46,7 +44,8 @@ public class Shelf : MonoBehaviour
         }
         
         Instantiate(_items[ItemsCount++], _itemsRoot);
-        ItemSpawned?.Invoke();
+        
+        ItemSpawned?.Invoke(this);
     }
     
     public void Fall()

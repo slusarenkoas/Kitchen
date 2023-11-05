@@ -1,31 +1,43 @@
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 public class ObjectsInteractionTask5 : MonoBehaviour
 {
-    [SerializeField] private Shelf _shelfOne;
-    [SerializeField] private Shelf _shelfTwo;
-    private void OnEnable()
-    {
-        Shelf.ItemSpawned += DestroyShelf;
-    }
+    [SerializeField] private Shelf[] _shelfs;
+    
+    private const int MAX_COUNT_DISHES_ON_ONE_SHELF = 3;
+    private readonly Dictionary<Shelf, int> _itemsOnShelf = new ();
 
-    private void OnDisable()
+    private void Awake()
     {
-        Shelf.ItemSpawned -= DestroyShelf;
-    }
-
-    private void DestroyShelf()
-    {
-        if (_shelfOne.ItemsCount > 3)
+        foreach (var shelf in _shelfs)
         {
-            _shelfOne.Fall();
-        }
-
-        if (_shelfTwo.ItemsCount > 3)
-        {
-            _shelfTwo.Fall();
+            shelf.ItemSpawned += OnItemSpawned;
         }
     }
+
+    private void OnDestroy()
+    {
+        foreach (var shelf in _shelfs)
+        {
+            shelf.ItemSpawned -= OnItemSpawned;
+        }
+    }
+    
+    private void OnItemSpawned(Shelf shelf)
+    {
+        _itemsOnShelf.TryAdd(shelf, 0);
+        _itemsOnShelf[shelf]++;
+        
+        if (_itemsOnShelf[shelf] > MAX_COUNT_DISHES_ON_ONE_SHELF)
+        {
+            shelf.Fall();
+        }
+    }
+    
+    
+    
+    
 }
